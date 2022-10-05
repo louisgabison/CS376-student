@@ -152,7 +152,7 @@ namespace Assets.Serialization
                     " ]");
         }
 
-                /// <summary>
+        /// <summary>
         /// Table of objects that have already been serialized.
         /// If idTable.ContainsKey(object), then that object has been
         /// serialized and its id number is idTable[object].
@@ -233,31 +233,46 @@ namespace Assets.Serialization
         /// <param name="o">Object to serialize</param>
         private void WriteComplexObject(object o)
         {
+           
+        
+   
+
             (int id, bool isNew) info = GetId(o);
             int id = info.id;
             bool isNew = info.isNew;
             
             if (isNew)
             {
+                Write("#");
+                Write(id);
+                Write("{");
+                Write("type:");
+                Writer.Write("\"");
+                Write(o.GetType().Name);
+                Writer.Write("\",");
                 bool first = true;
                 foreach( var keyvalue in Utilities.SerializedFields(o))
                 {
                     if (first)
                     {
                         WriteField(keyvalue.Key, keyvalue.Value, true);
+                        first = false;
                     }
                     else
                     {
                         WriteField(keyvalue.Key, keyvalue.Value, false);
                     }
                 }
+                Write("}");
 
             }
 
             else
             {
+
                 Write("#");
                 Write(id);
+                return;
             }
 
 
