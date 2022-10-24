@@ -26,11 +26,18 @@ public class Player : MonoBehaviour
     /// </summary>
     public float OrbVelocity = 10;
 
+    public Rigidbody2D myRB;
+
     /// <summary>
     /// Handle moving and firing.
     /// Called by Uniity every 1/50th of a second, regardless of the graphics card's frame rate
     /// </summary>
     // ReSharper disable once UnusedMember.Local
+    void Start()
+    {
+        this.myRB = this.GetComponent<Rigidbody2D>();
+    }
+
     void FixedUpdate()
     {
         Manoeuvre();
@@ -43,7 +50,11 @@ public class Player : MonoBehaviour
     /// </summary>
     void MaybeFire()
     {
-        // TODO
+        var isholding = Input.GetAxis("Fire");
+        if(isholding == 1)
+        {
+            FireOrb();
+        }
     }
 
     /// <summary>
@@ -53,7 +64,11 @@ public class Player : MonoBehaviour
     /// </summary>
     private void FireOrb()
     {
-        // TODO
+        var mycanv = FindObjectOfType<Canvas>();
+        Vector2 newpos = this.transform.position + this.transform.right;
+        GameObject myobject = Instantiate(OrbPrefab, newpos, Quaternion.identity, mycanv.transform);
+        myobject.GetComponent<Rigidbody2D>().velocity = OrbVelocity * this.transform.right;
+
     }
 
     /// <summary>
@@ -64,7 +79,10 @@ public class Player : MonoBehaviour
     /// </summary>
     void Manoeuvre()
     {
-        // TODO
+
+        Vector2 dir = new Vector2(Input.GetAxis("Horizontal") * this.EnginePower, Input.GetAxis("Vertical") * this.EnginePower);
+        this.myRB.angularVelocity = Input.GetAxis("Rotate") * RotateSpeed;
+        this.myRB.AddForce(dir);
     }
 
     /// <summary>

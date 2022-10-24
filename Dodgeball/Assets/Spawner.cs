@@ -20,12 +20,19 @@ public class Spawner : MonoBehaviour
     /// </summary>
     public float FreeRadius = 10;
 
+    public float nspawn = 0;
+
     /// <summary>
     /// Check if we need to spawn and if so, do so.
     /// </summary>
     // ReSharper disable once UnusedMember.Local
     void Update()
     {
-        // TODO
+        if (Time.time > this.nspawn)
+        {
+            var mycan = FindObjectOfType<Canvas>();
+            GameObject myobj = Instantiate(Prefab, SpawnUtilities.RandomFreePoint(FreeRadius), Quaternion.identity, mycan.transform);
+            nspawn += SpawnInterval;
+        }
     }
 }

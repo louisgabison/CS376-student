@@ -1,3 +1,4 @@
+using System.Numerics;
 using UnityEngine;
 
 /// <summary>
@@ -51,12 +52,14 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// Vector from us to the player
     /// </summary>
-    private Vector2 OffsetToPlayer => player.position - transform.position;
+    private UnityEngine.Vector2 OffsetToPlayer => player.position - transform.position;
 
     /// <summary>
     /// Unit vector in the direction of the player, relative to us
     /// </summary>
-    private Vector2 HeadingToPlayer => OffsetToPlayer.normalized;
+    private UnityEngine.Vector2 HeadingToPlayer => OffsetToPlayer.normalized;
+
+    public float nspawn = 0;
 
     /// <summary>
     /// Initialize player and rigidBody fields
@@ -64,8 +67,9 @@ public class Enemy : MonoBehaviour
     // ReSharper disable once UnusedMember.Local
     void Start()
     {
-        player = FindObjectOfType<Player>().transform;
         rigidBody = GetComponent<Rigidbody2D>();
+        player = FindObjectOfType<Player>().transform;
+        this.nspawn = Time.time;
     }
 
     /// <summary>
@@ -74,7 +78,11 @@ public class Enemy : MonoBehaviour
     // ReSharper disable once UnusedMember.Local
     void Update()
     {
-        // TODO
+        if (Time.time > this.nspawn)
+        {
+            Fire();
+            nspawn += CoolDownTime;
+        }
     }
 
     /// <summary>
@@ -83,7 +91,15 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void Fire()
     {
-        // TODO
+        var canvas = FindObjectOfType<Canvas>();
+        UnityEngine.Vector2 dir = HeadingToPlayer;
+        UnityEngine.Vector2 pos = this.transform.position;
+
+        UnityEngine.Vector2 newpos = pos + dir;
+
+        GameObject myobject = Instantiate(OrbPrefab, newpos, UnityEngine.Quaternion.identity, canvas.transform);
+        myobject.GetComponent<Rigidbody2D>().velocity = OrbVelocity * dir;
+        myobject.GetComponent<Rigidbody2D>().mass = OrbMass;
     }
 
     /// <summary>
