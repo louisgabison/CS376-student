@@ -21,7 +21,7 @@ public class TargetBox : MonoBehaviour
     {
         if (!(gameObject.GetComponent<SpriteRenderer>().color == Color.green))
         {
-            ScoreKeeper.AddToScore((float)gameObject.GetComponent<Rigidbody2D>().mass);
+            ScoreKeeper.AddToScore(1);
             gameObject.GetComponent<SpriteRenderer>().color = Color.green;
         }
         
